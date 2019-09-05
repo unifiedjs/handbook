@@ -1,23 +1,25 @@
-# unified Handbook
+# unified handbook
 
 **This is a work in progress**
 
 This handbook describes the unified ecosystem. It goes in depth about the numerous syntaxes it supports, how to use it, and practical guides on writing plugins.
 
-## Table of Contents
+## Table of contents
 
 -   [Introduction](#introduction)
 
--   [How Does it Work?](#how-does-it-work)
+-   [How does it work?](#how-does-it-work)
 
--   [Supported Syntaxes](#supported-syntaxes)
+-   [Supported syntaxes](#supported-syntaxes)
 
--   [Abstract Syntax Tree](#abstract-syntax-tree)
+-   [Abstract syntax trees](#abstract-syntax-trees)
+
+    -   [Constructing an AST](#constructing-an-ast)
 
 -   [unist](#unist)
 
     -   [Motivation](#motivation)
-    -   [Related](#related)
+    -   [unist resources](#unist-resources)
 
 -   [unified](#unified)
 
@@ -28,7 +30,7 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 -   [remark](#remark)
 
-    -   [remark Guides](#remark-guides)
+    -   [remark guides](#remark-guides)
 
         -   [Writing a plugin to modify headings](#writing-a-plugin-to-modify-headings)
 
@@ -52,7 +54,7 @@ It powers [remarkjs][], [rehypejs][], [mdx-js][], [retextjs][], and [redotjs][].
 
 Some notable users are [Node.js][], [ZEIT][],  [Netlify][], [GitHub][], [Mozilla][], [WordPress][], [Adobe][], [Facebook][], [Google][], and many more.
 
-## How Does it Work?
+## How does it work?
 
 unified uses [abstract syntax trees][asts], or ASTs, that plugins can operate on and even process between different formats. This means you can parse a Markdown document, transform it to HTML, and then even transpile back to Markdown!
 
@@ -63,7 +65,7 @@ visit(markdownAST, 'images', transformImages)
 visit(htmlAST, 'img', transformImgs)
 ```
 
-## Supported Syntaxes
+## Supported syntaxes
 
 unified supports a few different syntaxes. Each have their own formal specification and are compatible with all `unist` utility libraries.
 
@@ -74,9 +76,9 @@ unified supports a few different syntaxes. Each have their own formal specificat
 
 Each syntax has its own GitHub organization and subset of plugins and libraries.
 
-## Abstract Syntax Tree
+## Abstract syntax trees
 
-An Abstract Syntax Tree, or AST, is a representation of input. It's an abstraction that enables developers to analyze, transform and generate code.
+An abstract syntax tree, or AST, is a representation of input. It's an abstraction that enables developers to analyze, transform and generate code.
 
 They're the integral data structure in the unified ecosystem. Most plugins operate solely on the AST, receiving it as an argument and then returning a new AST afterwards.
 
@@ -88,13 +90,16 @@ module.exports = options => tree => {
 }
 ```
 
+### Constructing an AST
+
 In order to form an AST, unified takes an input string and passes that
 to a tokenizer. A tokenizer breaks up the input into tokens based on a
 syntax. In unified the tokenizer and lexer are coupled. When syntax is
 found the string is "eaten" and it's given metadata like node type (this
 is the "lexer").
 
-Then, the parser turns this information into an AST.
+Then, the parser turns this information into an AST. All together the
+pipeline looks like:
 
     [INPUT] => [TOKENIZER/LEXER] => [PARSER] => [AST]
 
@@ -115,7 +120,7 @@ unist is a specification for syntax trees which ensures that libraries that work
 
 A standard AST allows developers to use the same visitor function on all formats, whether it's markdown, HTML, natural language, or MDX. Using the same library ensures that the core functionality is as solid as possible while cutting down on cognitive overhead when trying to perform common tasks.
 
-### Related
+### unist resources
 
 -   [Read more about unist →](https://github.com/syntax-tree/unist)
 -   [See the list of unist utilities →](https://github.com/syntax-tree/unist/blob/master/readme.md#utilities)
@@ -221,7 +226,27 @@ transpile it to another format like HTML.
 It's highly configurable. Even plugins can customize the parser and compiler
 if needed.
 
-### remark Guides
+You can use the remark library directly in your scripts:
+
+```js
+remark()
+  .processSync('# Hello, world!')
+```
+
+Though, it's really a shortcut for:
+
+```js
+unified()
+  .use(remarkParse)
+  .use(remarkStringify)
+  .processSync('# Hello, world!')
+```
+
+### remark CLI
+
+remark offers a CLI that can be used as well.
+
+### remark guides
 
 #### Writing a plugin to modify headings
 
@@ -301,7 +326,7 @@ This handbook is inspired by the [babel-handbook][] written by
 
 [ZEIT]: https://zeit.co
 
-[asts]: https://github.com/syntax-trees
+[asts]: https://github.com/syntax-tree
 
 [babel-handbook]: https://github.com/jamiebuilds/babel-handbook
 
@@ -309,7 +334,7 @@ This handbook is inspired by the [babel-handbook][] written by
 
 [gatsbyjs]: https://gatsbyjs.org
 
-[hast]: https://github.com/syntax-trees/hast
+[hast]: https://github.com/syntax-tree/hast
 
 [jamiebuilds]: https://github.com/jamiebuilds
 
@@ -317,15 +342,15 @@ This handbook is inspired by the [babel-handbook][] written by
 
 [jsx]: https://reactjs.org/docs/jsx-in-depth.html
 
-[mdast]: https://github.com/syntax-trees/mdast
+[mdast]: https://github.com/syntax-tree/mdast
 
 [mdx-js]: https://github.com/mdx-js
 
 [mdx]: https://mdxjs.com
 
-[mdxast]: https://github.com/syntax-trees/mdxast
+[mdxast]: https://github.com/syntax-tree/mdxast
 
-[nlcst]: https://github.com/syntax-trees/nlcst
+[nlcst]: https://github.com/syntax-tree/nlcst
 
 [prettier]: https://prettier.io
 
@@ -337,6 +362,6 @@ This handbook is inspired by the [babel-handbook][] written by
 
 [retextjs]: https://github.com/retextjs
 
-[unist]: https://github.com/syntax-trees/unist
+[unist]: https://github.com/syntax-tree/unist
 
 [wooorm]: https://github.com/wooorm

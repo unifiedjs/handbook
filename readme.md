@@ -6,6 +6,40 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 ## Table of Contents
 
+-   [Introduction](#introduction)
+
+-   [How Does it Work?](#how-does-it-work)
+
+-   [Supported Syntaxes](#supported-syntaxes)
+
+-   [Abstract Syntax Tree](#abstract-syntax-tree)
+
+-   [unist](#unist)
+
+    -   [Motivation](#motivation)
+    -   [Related](#related)
+
+-   [unified](#unified)
+
+    -   [Parser](#parser)
+    -   [Compiler](#compiler)
+    -   [Transpiler](#transpiler)
+    -   [Usage](#usage)
+
+-   [remark](#remark)
+
+-   [rehype](#rehype)
+
+-   [retext](#retext)
+
+-   [MDX](#mdx)
+
+-   [Collective](#collective)
+
+-   [Authors](#authors)
+
+-   [Related](#related-1)
+
 ## Introduction
 
 **unified** enables new exciting projects like [Gatsby][] to pull in Markdown, [MDX][] to embed [JSX][], and [Prettier][] to format it. It’s used in about 300k projects on GitHub and has about 10m downloads each month on npm: you’re probably using it.
@@ -29,10 +63,10 @@ visit(htmlAST, 'img', transformImgs)
 
 unified supports a few different syntaxes. Each have their own formal specification and are compatible with all `unist` utility libraries.
 
-- [mdast][]/[remarkjs][]: Markdown
-- [hast][]/[rehypejs][]: HTML
-- [nlcst][]/[retextjs][]: Natural language
-- [mdxast][]/[mdx-js][]: MDX
+-   [mdast][]/[remarkjs][]: Markdown
+-   [hast][]/[rehypejs][]: HTML
+-   [nlcst][]/[retextjs][]: Natural language
+-   [mdxast][]/[mdx-js][]: MDX
 
 Each syntax has its own GitHub organization and subset of plugins and libraries.
 
@@ -60,8 +94,8 @@ A standard AST allows developers to use the same visitor function on all formats
 
 ### Related
 
-- [Read more about units &rarr;](https://github.com/syntax-tree/unist)
-- [See the list of units utilities &rarr;](https://github.com/syntax-tree/unist/blob/master/readme.md#utilities)
+-   [Read more about units →](https://github.com/syntax-tree/unist)
+-   [See the list of units utilities →](https://github.com/syntax-tree/unist/blob/master/readme.md#utilities)
 
 ## unified
 
@@ -132,12 +166,12 @@ unified()
 
 The code is doing the following:
 
-- Receives a markdown string (`process()`)
-- Parses the markdown (`.use(markdown)`)
-- Converts the mdast to hast (`.use(remark2rehype)`)
-- Wraps the hast in a document (`.use(doc)`)
-- Formats the hast (`.use(format)`)
-- Converts the hast to HTML (`.use(html)`)
+-   Receives a markdown string (`process()`)
+-   Parses the markdown (`.use(markdown)`)
+-   Converts the mdast to hast (`.use(remark2rehype)`)
+-   Wraps the hast in a document (`.use(doc)`)
+-   Formats the hast (`.use(format)`)
+-   Converts the hast to HTML (`.use(html)`)
 
 It'll result in the following HTML string:
 
@@ -167,13 +201,13 @@ It'll result in the following HTML string:
 
 unified was originally created by [Titus Wormer][wooorm]. It's now governed by a collective which handles the many GitHub organizations, repositories, and packages that are part of the greater unified ecosystem.
 
-The collective and its governance won't be addressed in this handbook. If you're interested, you can [read more about the collective &rarr;](https://github.com/unifiedjs/collective)
+The collective and its governance won't be addressed in this handbook. If you're interested, you can [read more about the collective →](https://github.com/unifiedjs/collective)
 on GitHub.
 
 ## Authors
 
-- [John Otander][johno]
-- [Titus Wormer][wooorm]
+-   [John Otander][johno]
+-   [Titus Wormer][wooorm]
 
 ## Related
 
@@ -181,31 +215,59 @@ This handbook is inspired by the [babel-handbook][] written by
 [James Kyle][jamiebuilds].
 
 [Adobe]: https://www.adobe.com
+
 [Facebook]: https://www.facebook.com
+
 [GitHub]: https://github.com
+
 [Google]: https://www.google.com
+
 [Mozilla]: https://www.mozilla.org
+
 [Netlify]: https://www.netlify.com
+
 [Node.js]: https://nodejs.org
+
 [WordPress]: https://wordpress.com
+
 [ZEIT]: https://zeit.co
+
 [asts]: https://github.com/syntax-trees
+
 [babel-handbook]: https://github.com/jamiebuilds/babel-handbook
+
 [gatsby]: https://gatsbyjs.org
+
 [gatsbyjs]: https://gatsbyjs.org
+
 [hast]: https://github.com/syntax-trees/hast
+
 [jamiebuilds]: https://github.com/jamiebuilds
+
 [johno]: https://johno.com
+
 [jsx]: https://reactjs.org/docs/jsx-in-depth.html
+
 [mdast]: https://github.com/syntax-trees/mdast
+
 [mdx-js]: https://github.com/mdx-js
+
 [mdx]: https://mdxjs.com
+
 [mdxast]: https://github.com/syntax-trees/mdxast
+
 [nlcst]: https://github.com/syntax-trees/nlcst
+
 [prettier]: https://prettier.io
+
 [redotjs]: https://github.com/redotjs
+
 [rehypejs]: https://github.com/rehypejs
+
 [remarkjs]: https://github.com/remarkjs
+
 [retextjs]: https://github.com/retextjs
+
 [unist]: https://github.com/syntax-trees/unist
+
 [wooorm]: https://github.com/wooorm

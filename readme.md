@@ -94,8 +94,8 @@ A standard AST allows developers to use the same visitor function on all formats
 
 ### Related
 
--   [Read more about units →](https://github.com/syntax-tree/unist)
--   [See the list of units utilities →](https://github.com/syntax-tree/unist/blob/master/readme.md#utilities)
+-   [Read more about unist →](https://github.com/syntax-tree/unist)
+-   [See the list of unist utilities →](https://github.com/syntax-tree/unist/blob/master/readme.md#utilities)
 
 ## unified
 

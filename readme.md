@@ -2,8 +2,7 @@
 
 **This is a work in progress**
 
-This handbook describes the unified ecosystem. It goes in depth
-about the numerous syntaxes it supports, how to use it, and practical guides on writing plugins.
+This handbook describes the unified ecosystem. It goes in depth about the numerous syntaxes it supports, how to use it, and practical guides on writing plugins.
 
 ## Table of Contents
 
@@ -37,7 +36,32 @@ unified supports a few different syntaxes. Each have their own formal specificat
 
 Each syntax has its own GitHub organization and subset of plugins and libraries.
 
+## Abstract Syntax Tree
+
+An Abstract Syntax Tree, or AST, is a representation of input. It's an abstraction that enables developers to analyze, transform and generate code.
+
+They're the integral data structure in the unified ecosystem. Most plugins operate solely on the AST, receiving it as an argument and then returning a new AST afterwards.
+
+Your most basic plugin looks like the following (where tree is an AST):
+
+```js
+module.exports = options => tree => {
+  return tree
+}
+```
+
 ## unist
+
+unist is a specification for syntax trees which ensures that libraries that work with unified are as interoperable as possible. **All ASTs in unified conform to this spec**. It's the bread and butter of the ecosystem.
+
+### Motivation
+
+A standard AST allows developers to use the same visitor function on all formats, whether it's markdown, HTML, natural language, or MDX. Using the same library ensures that the core functionality is as solid as possible while cutting down on cognitive overhead when trying to perform common tasks.
+
+### Related
+
+- [Read more about units &rarr;](https://github.com/syntax-tree/unist)
+- [See the list of units utilities &rarr;](https://github.com/syntax-tree/unist/blob/master/readme.md#utilities)
 
 ## unified
 
@@ -167,6 +191,7 @@ This handbook is inspired by the [babel-handbook][] written by
 [ZEIT]: https://zeit.co
 [asts]: https://github.com/syntax-trees
 [babel-handbook]: https://github.com/jamiebuilds/babel-handbook
+[gatsby]: https://gatsbyjs.org
 [gatsbyjs]: https://gatsbyjs.org
 [hast]: https://github.com/syntax-trees/hast
 [jamiebuilds]: https://github.com/jamiebuilds

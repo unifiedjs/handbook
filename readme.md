@@ -201,7 +201,7 @@ It'll result in the following HTML string:
 
 unified was originally created by [Titus Wormer][wooorm]. It's now governed by a collective which handles the many GitHub organizations, repositories, and packages that are part of the greater unified ecosystem.
 
-The collective and its governance won't be addressed in this handbook. If you're interested, you can [read more about the collective →](https://github.com/unifiedjs/collective)
+The collective and its governance won't be addressed in this handbook. If you're interested, you can [read more about the collective](https://github.com/unifiedjs/collective)
 on GitHub.
 
 ## Authors

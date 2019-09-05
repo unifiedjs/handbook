@@ -28,6 +28,10 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 -   [remark](#remark)
 
+    -   [remark Guides](#remark-guides)
+
+        -   [Writing a plugin to modify headings](#writing-a-plugin-to-modify-headings)
+
 -   [rehype](#rehype)
 
 -   [retext](#retext)
@@ -38,7 +42,7 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 -   [Authors](#authors)
 
--   [Related](#related-1)
+-   [Acknowledgements](#acknowledgements)
 
 ## Introduction
 
@@ -83,6 +87,25 @@ module.exports = options => tree => {
   return tree
 }
 ```
+
+In order to form an AST, unified takes an input string and passes that
+to a tokenizer. A tokenizer breaks up the input into tokens based on a
+syntax. In unified the tokenizer and lexer are coupled. When syntax is
+found the string is "eaten" and it's given metadata like node type (this
+is the "lexer").
+
+Then, the parser turns this information into an AST.
+
+    [INPUT] => [TOKENIZER/LEXER] => [PARSER] => [AST]
+
+A compiler turns an AST into output (typically a string). It provides
+functions that handle each node type and compiles them to the desired
+end result.
+
+For example, a compiler for markdown would encounter a `link` node and
+transform it into `[]()` markdown syntax.
+
+    [AST] => [COMPILER] => [OUTPUT]
 
 ## unist
 
@@ -191,6 +214,52 @@ It'll result in the following HTML string:
 
 ## remark
 
+remark is a plugin-based markdown processor. It has the ability to parse
+markdown, transform it with plugins, and then write back to markdown or
+transpile it to another format like HTML.
+
+It's highly configurable. Even plugins can customize the parser and compiler
+if needed.
+
+### remark Guides
+
+#### Writing a plugin to modify headings
+
+`unist-util-visit` is useful for visiting nodes in an AST based on a particular
+type. To visit all headings you can use it like so:
+
+```js
+module.exports = () => tree => {
+  visit(tree, 'heading', node => {
+    console.log(node)
+  })
+}
+```
+
+The above will log all heading nodes. Heading nodes also have a `depth` field which
+indicates whether it's `h1`-`h6`. You can use that to narrow down what heading
+nodes you want to operate on.
+
+Below is a plugin that prefixes "BREAKING" to all `h1`s in a markdown document.
+
+```js
+const visit = require('unist-util-visit')
+
+module.exports = () => tree => {
+  visit(tree, 'heading', node => {
+    if (node.depth !== 1) {
+      return
+    }
+
+    visit(node, 'text', textNode => {
+      textNode.value = 'BREAKING ' + textNode.value
+    })
+  })
+}
+```
+
+[Watch the lesson on egghead →](https://egghead.io/lessons/javascript-create-a-remark-plugin-to-modify-markdown-headings)
+
 ## rehype
 
 ## retext
@@ -209,7 +278,7 @@ on GitHub.
 -   [John Otander][johno]
 -   [Titus Wormer][wooorm]
 
-## Related
+## Acknowledgements
 
 This handbook is inspired by the [babel-handbook][] written by
 [James Kyle][jamiebuilds].

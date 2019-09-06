@@ -73,10 +73,10 @@ visit(htmlAST, 'img', transformImgs)
 
 unified supports a few different syntaxes. Each have their own formal specification and are compatible with all `unist` utility libraries.
 
--   [**mdast**][]/[**remarkjs**][]: Markdown
--   [**hast**][]/[**rehypejs**][]: HTML
--   [**nlcst**][]/[**retextjs**][]: Natural language
--   [**mdxast**][]/[**mdx-js**][]: MDX
+-   **[mdast][]**/**[remarkjs][]**: Markdown
+-   **[hast][]**/**[rehypejs][]**: HTML
+-   **[nlcst][]**/**[retextjs][]**: Natural language
+-   **[mdxast][]**/**[mdx-js][]**: MDX
 
 Each syntax has its own GitHub organization and subset of plugins and libraries.
 

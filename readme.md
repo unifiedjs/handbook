@@ -16,6 +16,8 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
     -   [Constructing an AST](#constructing-an-ast)
 
+        -   [Parse example](#parse-example)
+
 -   [unist](#unist)
 
     -   [Motivation](#motivation)
@@ -29,6 +31,8 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
     -   [Usage](#usage)
 
 -   [remark](#remark)
+
+    -   [remark CLI](#remark-cli)
 
     -   [remark guides](#remark-guides)
 
@@ -113,7 +117,7 @@ Consider this markdown input:
 
 The tokenizer will match the "#" and create a heading node. Then
 it will begin searching for inline syntax where it will encounter
-"**" and create a strong node.
+"\*\*" and create a strong node.
 
 It's important to note that the parser first looks for block-level
 syntax which includes headings, code blocks, lists, paragraphs,

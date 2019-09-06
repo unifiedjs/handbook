@@ -23,11 +23,6 @@ to abstract away.
 
         -   [Parse example](#parse-example)
 
--   [Tree traversal](#tree-traversal)
-
-    -   [Breadth-first traversal](#breadth-first-traversal)
-    -   [Depth-first traversal](#depth-first-traversal)
-
 -   [unist](#unist)
 
     -   [Motivation](#motivation)
@@ -62,6 +57,11 @@ to abstract away.
 -   [retext](#retext)
 
 -   [MDX](#mdx)
+
+-   [Tree traversal](#tree-traversal)
+
+    -   [Breadth-first traversal](#breadth-first-traversal)
+    -   [Depth-first traversal](#depth-first-traversal)
 
 -   [Collective](#collective)
 
@@ -340,82 +340,6 @@ in:
 </h1>
 ```
 
-## Tree traversal
-
-Tree traversal is a common task when working with a [_tree_][term-tree] to
-search it.
-Tree traversal is typically either _breadth-first_ or _depth-first_.
-
-In the following examples, we’ll work with this tree:
-
-```ascii
-                 +---+
-                 | A |
-                 +-+-+
-                   |
-             +-----+-----+
-             |           |
-           +-+-+       +-+-+
-           | B |       | F |
-           +-+-+       +-+-+
-             |           |
-    +-----+--+--+        |
-    |     |     |        |
-  +-+-+ +-+-+ +-+-+    +-+-+
-  | C | | D | | E |    | G |
-  +---+ +---+ +---+    +---+
-```
-
-### Breadth-first traversal
-
-**Breadth-first traversal** is visiting a node and all its
-[_siblings_][term-sibling] to broaden the search at that level, before
-traversing [_children_][term-child].
-
-For the syntax tree defined in the diagram, a breadth-first traversal first
-searches the root of the tree (**A**), then its children (**B** and **F**), then
-their children (**C**, **D**, **E**, and **G**).
-
-### Depth-first traversal
-
-Alternatively, and more commonly, **depth-first traversal** is used.
-The search is first deepened, by traversing [_children_][term-child], before
-traversing [_siblings_][term-sibling].
-
-For the syntax tree defined in the diagram, a depth-first traversal first
-searches the root of the tree (**A**), then one of its children (**B** or
-**F**), then their children (**C**, **D**, and **E**, or **G**).
-
-For a given node _N_ with [_children_][term-child], a **depth-first traversal**
-performs three steps, simplified to only binary trees (every node has
-[_head_][term-head] and [_tail_][term-tail], but no other children):
-
--   **N**: visit _N_ itself
--   **L**: traverse [_head_][term-head]
--   **R**: traverse [_tail_][term-tail]
-
-These steps can be done in any order, but for non-binary trees, **L** and **R**
-occur together.
-If **L** is done before **R**, the traversal is called _left-to-right_
-traversal, otherwise it is called _right-to-left_ traversal.
-In the case of non-binary trees, the other children between _head_ and _tail_
-are processed in that order as well, so for _left-to-right_ traversal, first
-_head_ is traversed (**L**), then its _next sibling_ is traversed, etcetera,
-until finally _tail_ (**R**) is traversed.
-
-Because **L** and **R** occur together for non-binary trees, we can produce four
-types of orders: NLR, NRL, LRN, RLN.
-
-NLR and LRN (the two _left-to-right_ traversal options) are most commonly used
-and respectively named [_preorder_][term-preorder] and
-[_postorder_][term-postorder].
-
-For the syntax tree defined in the diagram, _preorder_ and _postorder_ traversal
-thus first search the root of the tree (**A**), then its head (**B**), then its
-children from left-to-right (**C**, **D**, and then **E**).
-After all [_descendants_][term-descendant] of **B** are traversed, its next
-sibling (**F**) is traversed and then finally its only child (**G**).
-
 ## unist
 
 unist is a specification for syntax trees which ensures that libraries that work with
@@ -644,6 +568,82 @@ module.exports = () => tree => {
 ## retext
 
 ## MDX
+
+## Tree traversal
+
+Tree traversal is a common task when working with a [_tree_][term-tree] to
+search it.
+Tree traversal is typically either _breadth-first_ or _depth-first_.
+
+In the following examples, we’ll work with this tree:
+
+```ascii
+                 +---+
+                 | A |
+                 +-+-+
+                   |
+             +-----+-----+
+             |           |
+           +-+-+       +-+-+
+           | B |       | F |
+           +-+-+       +-+-+
+             |           |
+    +-----+--+--+        |
+    |     |     |        |
+  +-+-+ +-+-+ +-+-+    +-+-+
+  | C | | D | | E |    | G |
+  +---+ +---+ +---+    +---+
+```
+
+### Breadth-first traversal
+
+**Breadth-first traversal** is visiting a node and all its
+[_siblings_][term-sibling] to broaden the search at that level, before
+traversing [_children_][term-child].
+
+For the syntax tree defined in the diagram, a breadth-first traversal first
+searches the root of the tree (**A**), then its children (**B** and **F**), then
+their children (**C**, **D**, **E**, and **G**).
+
+### Depth-first traversal
+
+Alternatively, and more commonly, **depth-first traversal** is used.
+The search is first deepened, by traversing [_children_][term-child], before
+traversing [_siblings_][term-sibling].
+
+For the syntax tree defined in the diagram, a depth-first traversal first
+searches the root of the tree (**A**), then one of its children (**B** or
+**F**), then their children (**C**, **D**, and **E**, or **G**).
+
+For a given node _N_ with [_children_][term-child], a **depth-first traversal**
+performs three steps, simplified to only binary trees (every node has
+[_head_][term-head] and [_tail_][term-tail], but no other children):
+
+-   **N**: visit _N_ itself
+-   **L**: traverse [_head_][term-head]
+-   **R**: traverse [_tail_][term-tail]
+
+These steps can be done in any order, but for non-binary trees, **L** and **R**
+occur together.
+If **L** is done before **R**, the traversal is called _left-to-right_
+traversal, otherwise it is called _right-to-left_ traversal.
+In the case of non-binary trees, the other children between _head_ and _tail_
+are processed in that order as well, so for _left-to-right_ traversal, first
+_head_ is traversed (**L**), then its _next sibling_ is traversed, etcetera,
+until finally _tail_ (**R**) is traversed.
+
+Because **L** and **R** occur together for non-binary trees, we can produce four
+types of orders: NLR, NRL, LRN, RLN.
+
+NLR and LRN (the two _left-to-right_ traversal options) are most commonly used
+and respectively named [_preorder_][term-preorder] and
+[_postorder_][term-postorder].
+
+For the syntax tree defined in the diagram, _preorder_ and _postorder_ traversal
+thus first search the root of the tree (**A**), then its head (**B**), then its
+children from left-to-right (**C**, **D**, and then **E**).
+After all [_descendants_][term-descendant] of **B** are traversed, its next
+sibling (**F**) is traversed and then finally its only child (**G**).
 
 ## Collective
 

@@ -2,7 +2,7 @@
 
 **This is a work in progress**
 
-This handbook describes the unified ecosystem. It goes in depth about the numerous syntaxes it supports, how to use it, and practical guides on writing plugins.
+This handbook describes the unified ecosystem. It goes in depth about the numerous syntaxes it supports, usage, and practical guides on writing plugins.
 
 ## Table of contents
 
@@ -52,11 +52,11 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 It powers [remarkjs][], [rehypejs][], [mdx-js][], [retextjs][], and [redotjs][]. It's used to build other projects like [prettier][], [gatsbyjs][], and more.
 
-Some notable users are [Node.js][], [ZEIT][],  [Netlify][], [GitHub][], [Mozilla][], [WordPress][], [Adobe][], [Facebook][], [Google][], and many more.
+Some notable users are [Node.js][], [ZEIT][],  [Netlify][], [GitHub][], [Mozilla][], [WordPress][], [Adobe][], [Facebook][], [Google][].
 
 ## How does it work?
 
-unified uses [abstract syntax trees][asts], or ASTs, that plugins can operate on and even process between different formats. This means you can parse a Markdown document, transform it to HTML, and then even transpile back to Markdown!
+unified uses [abstract syntax trees][asts], or ASTs, that plugins can operate on. It can even process between different formats. This means you can parse a markdown document, transform it to HTML, and then transpile back to markdown.
 
 unified leverages a syntax tree specification (called [unist][] or UST) so that utilities can be shared amongst different formats. In practice, you can use `unist-util-visit` to visit nodes **using the same library with the same API** on any supported AST.
 
@@ -69,10 +69,10 @@ visit(htmlAST, 'img', transformImgs)
 
 unified supports a few different syntaxes. Each have their own formal specification and are compatible with all `unist` utility libraries.
 
--   [mdast][]/[remarkjs][]: Markdown
--   [hast][]/[rehypejs][]: HTML
--   [nlcst][]/[retextjs][]: Natural language
--   [mdxast][]/[mdx-js][]: MDX
+-   [**mdast**][]/[**remarkjs**][]: Markdown
+-   [**hast**][]/[**rehypejs**][]: HTML
+-   [**nlcst**][]/[**retextjs**][]: Natural language
+-   [**mdxast**][]/[**mdx-js**][]: MDX
 
 Each syntax has its own GitHub organization and subset of plugins and libraries.
 
@@ -82,7 +82,7 @@ An abstract syntax tree, or AST, is a representation of input. It's an abstracti
 
 They're the integral data structure in the unified ecosystem. Most plugins operate solely on the AST, receiving it as an argument and then returning a new AST afterwards.
 
-Your most basic plugin looks like the following (where tree is an AST):
+Your most basic plugin looks like the following (where the tree is an AST):
 
 ```js
 module.exports = options => tree => {
@@ -93,7 +93,7 @@ module.exports = options => tree => {
 ### Constructing an AST
 
 In order to form an AST, unified takes an input string and passes that
-to a tokenizer. A tokenizer breaks up the input into tokens based on a
+to a tokenizer. A tokenizer breaks up the input into tokens based on the
 syntax. In unified the tokenizer and lexer are coupled. When syntax is
 found the string is "eaten" and it's given metadata like node type (this
 is the "lexer").
@@ -103,6 +103,118 @@ pipeline looks like:
 
     [INPUT] => [TOKENIZER/LEXER] => [PARSER] => [AST]
 
+#### Parse example
+
+Consider this markdown input:
+
+```md
+# Hello, **world**!
+```
+
+The tokenizer will match the "#" and create a heading node. Then
+it will begin searching for inline syntax where it will encounter
+"**" and create a strong node.
+
+It's important to note that the parser first looks for block-level
+syntax which includes headings, code blocks, lists, paragraphs,
+and block quotes.
+
+Once a block has been opened, inline tokenization begins which searches
+for syntax including bold, code, emphasis, and links.
+
+The markdown will result in the following AST:
+
+```json
+{
+  "type": "heading",
+  "depth": 1,
+  "children": [
+    {
+      "type": "text",
+      "value": "Hello, ",
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 3,
+          "offset": 2
+        },
+        "end": {
+          "line": 1,
+          "column": 10,
+          "offset": 9
+        },
+        "indent": []
+      }
+    },
+    {
+      "type": "strong",
+      "children": [
+        {
+          "type": "text",
+          "value": "world",
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 12,
+              "offset": 11
+            },
+            "end": {
+              "line": 1,
+              "column": 17,
+              "offset": 16
+            },
+            "indent": []
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 10,
+          "offset": 9
+        },
+        "end": {
+          "line": 1,
+          "column": 19,
+          "offset": 18
+        },
+        "indent": []
+      }
+    },
+    {
+      "type": "text",
+      "value": "!",
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 19,
+          "offset": 18
+        },
+        "end": {
+          "line": 1,
+          "column": 20,
+          "offset": 19
+        },
+        "indent": []
+      }
+    }
+  ],
+  "position": {
+    "start": {
+      "line": 1,
+      "column": 1,
+      "offset": 0
+    },
+    "end": {
+      "line": 1,
+      "column": 20,
+      "offset": 19
+    },
+    "indent": []
+  }
+}
+```
+
 A compiler turns an AST into output (typically a string). It provides
 functions that handle each node type and compiles them to the desired
 end result.
@@ -111,6 +223,16 @@ For example, a compiler for markdown would encounter a `link` node and
 transform it into `[]()` markdown syntax.
 
     [AST] => [COMPILER] => [OUTPUT]
+
+It would turn the AST example above _back_ into the source markdown when
+compiling to markdown. It could also be compiled to HTML and would result
+in:
+
+```html
+<h1>
+  Hello, <strong>world</strong>!
+</h1>
+```
 
 ## unist
 
@@ -192,7 +314,7 @@ unified()
   })
 ```
 
-The code is doing the following:
+**The code is doing the following**
 
 -   Receives a markdown string (`process()`)
 -   Parses the markdown (`.use(markdown)`)
@@ -201,7 +323,7 @@ The code is doing the following:
 -   Formats the hast (`.use(format)`)
 -   Converts the hast to HTML (`.use(html)`)
 
-It'll result in the following HTML string:
+It'll result in an HTML string:
 
 ```html
 <!doctype html>

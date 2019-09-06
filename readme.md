@@ -62,26 +62,26 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 -   [Glossary](#glossary)
 
-    -   -   -   -   [Tree](#tree)
-                -   [Child](#child)
-                -   [Parent](#parent)
-                -   [Index](#index)
-                -   [Sibling](#sibling)
-                -   [Root](#root)
-                -   [Descendant](#descendant)
-                -   [Ancestor](#ancestor)
-                -   [Head](#head)
-                -   [Tail](#tail)
-                -   [Leaf](#leaf)
-                -   [Branch](#branch)
-                -   [Generated](#generated)
-                -   [Type](#type)
-                -   [Positional information](#positional-information)
-                -   [File](#file)
-                -   [Preorder](#preorder)
-                -   [Postorder](#postorder)
-                -   [Enter](#enter)
-                -   [Exit](#exit)
+    -   [Tree](#tree)
+    -   [Child](#child)
+    -   [Parent](#parent)
+    -   [Index](#index)
+    -   [Sibling](#sibling)
+    -   [Root](#root)
+    -   [Descendant](#descendant)
+    -   [Ancestor](#ancestor)
+    -   [Head](#head)
+    -   [Tail](#tail)
+    -   [Leaf](#leaf)
+    -   [Branch](#branch)
+    -   [Generated](#generated)
+    -   [Type](#type)
+    -   [Positional information](#positional-information)
+    -   [File](#file)
+    -   [Preorder](#preorder)
+    -   [Postorder](#postorder)
+    -   [Enter](#enter)
+    -   [Exit](#exit)
 
 -   [Authors](#authors)
 
@@ -575,24 +575,24 @@ on GitHub.
 
 ## Glossary
 
-###### Tree
+### Tree
 
 A **tree** is a node and all of its [_descendants_][term-descendant] (if any).
 
-###### Child
+### Child
 
 Node X is **child** of node Y, if Y’s `children` include X.
 
-###### Parent
+### Parent
 
 Node X is **parent** of node Y, if Y is a [_child_][term-child] of X.
 
-###### Index
+### Index
 
 The **index** of a [_child_][term-child] is its number of preceding
 [_siblings_][term-sibling], or `0` if it has none.
 
-###### Sibling
+### Sibling
 
 Node X is a **sibling** of node Y, if X and Y have the same
 [_parent_][term-parent] (if any).
@@ -603,7 +603,7 @@ The **previous sibling** of a [_child_][term-child] is its **sibling** at its
 The **next sibling** of a [_child_][term-child] is its **sibling** at its
 [_index_][term-index] plus 1.
 
-###### Root
+### Root
 
 The **root** of a node is itself, if without [_parent_][term-parent], or the
 **root** of its [_parent_][term-parent].
@@ -611,50 +611,50 @@ The **root** of a node is itself, if without [_parent_][term-parent], or the
 The **root** of a [_tree_][term-tree] is any node in that [_tree_][term-tree]
 without [_parent_][term-parent].
 
-###### Descendant
+### Descendant
 
 Node X is **descendant** of node Y, if X is a [_child_][term-child] of Y, or if
 X is a [_child_][term-child] of node Z that is a **descendant** of Y.
 
 An **inclusive descendant** is a node or one of its **descendants**.
 
-###### Ancestor
+### Ancestor
 
 Node X is an **ancestor** of node Y, if Y is a [_descendant_][term-descendant]
 of X.
 
 An **inclusive ancestor** is a node or one of its **ancestors**.
 
-###### Head
+### Head
 
 The **head** of a node is its first [_child_][term-child] (if any).
 
-###### Tail
+### Tail
 
 The **tail** of a node is its last [_child_][term-child] (if any).
 
-###### Leaf
+### Leaf
 
 A **leaf** is a node with no [_children_][term-child].
 
-###### Branch
+### Branch
 
 A **branch** is a node with one or more [_children_][term-child].
 
-###### Generated
+### Generated
 
 A node is **generated** if it does not have [_positional
 information_][term-positional-info].
 
-###### Type
+### Type
 
 The **type** of a node is the value of its `type` field.
 
-###### Positional information
+### Positional information
 
 The **positional information** of a node is the value of its `position` field.
 
-###### File
+### File
 
 A **file** is a source document that represents the original file that was
 parsed to produce the syntax tree.
@@ -664,7 +664,7 @@ Files are provided by the host environment and not defined by unist.
 
 For example, see projects such as [**vfile**][vfile].
 
-###### Preorder
+### Preorder
 
 In **preorder** (**NLR**) is [depth-first][traversal-depth] [tree
 traversal][traversal] that performs the following steps for each node _N_:
@@ -674,7 +674,7 @@ traversal][traversal] that performs the following steps for each node _N_:
     moving forward until reaching _tail_)
 3.  **R**: traverse [_tail_][term-tail]
 
-###### Postorder
+### Postorder
 
 In **postorder** (**LRN**) is [depth-first][traversal-depth] [tree
 traversal][traversal] that performs the following steps for each node _N_:
@@ -684,7 +684,7 @@ traversal][traversal] that performs the following steps for each node _N_:
 2.  **R**: traverse [_tail_][term-tail]
 3.  **N**: visit _N_ itself
 
-###### Enter
+### Enter
 
 **Enter** is a step right before other steps performed on a given node _N_ when
 [**traversing**][traversal] a tree.
@@ -692,7 +692,7 @@ traversal][traversal] that performs the following steps for each node _N_:
 For example, when performing _preorder_ traversal, **enter** is the first step
 taken, right before visiting _N_ itself.
 
-###### Exit
+### Exit
 
 **Exit** is a step right after other steps performed on a given node _N_ when
 [**traversing**][traversal] a tree.

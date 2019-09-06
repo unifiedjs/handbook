@@ -18,9 +18,23 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
         -   [Parse example](#parse-example)
 
+-   [Tree traversal](#tree-traversal)
+
+    -   -   -   -   [Breadth-first traversal](#breadth-first-traversal)
+                -   [Depth-first traversal](#depth-first-traversal)
+
 -   [unist](#unist)
 
     -   [Motivation](#motivation)
+
+    -   [`unist-util-visit`](#unist-util-visit)
+
+    -   [`unist-util-remove`](#unist-util-remove)
+
+    -   [Advanced operations](#advanced-operations)
+
+        -   [Removing nodes based on parent context](#removing-nodes-based-on-parent-context)
+
     -   [unist resources](#unist-resources)
 
 -   [unified](#unified)
@@ -45,6 +59,29 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 -   [MDX](#mdx)
 
 -   [Collective](#collective)
+
+-   [Glossary](#glossary)
+
+    -   -   -   -   [Tree](#tree)
+                -   [Child](#child)
+                -   [Parent](#parent)
+                -   [Index](#index)
+                -   [Sibling](#sibling)
+                -   [Root](#root)
+                -   [Descendant](#descendant)
+                -   [Ancestor](#ancestor)
+                -   [Head](#head)
+                -   [Tail](#tail)
+                -   [Leaf](#leaf)
+                -   [Branch](#branch)
+                -   [Generated](#generated)
+                -   [Type](#type)
+                -   [Positional information](#positional-information)
+                -   [File](#file)
+                -   [Preorder](#preorder)
+                -   [Postorder](#postorder)
+                -   [Enter](#enter)
+                -   [Exit](#exit)
 
 -   [Authors](#authors)
 
@@ -238,6 +275,82 @@ in:
 </h1>
 ```
 
+## Tree traversal
+
+Tree traversal is a common task when working with a [_tree_][term-tree] to
+search it.
+Tree traversal is typically either _breadth-first_ or _depth-first_.
+
+In the following examples, we’ll work with this tree:
+
+```ascii
+                 +---+
+                 | A |
+                 +-+-+
+                   |
+             +-----+-----+
+             |           |
+           +-+-+       +-+-+
+           | B |       | F |
+           +-+-+       +-+-+
+             |           |
+    +-----+--+--+        |
+    |     |     |        |
+  +-+-+ +-+-+ +-+-+    +-+-+
+  | C | | D | | E |    | G |
+  +---+ +---+ +---+    +---+
+```
+
+###### Breadth-first traversal
+
+**Breadth-first traversal** is visiting a node and all its
+[_siblings_][term-sibling] to broaden the search at that level, before
+traversing [_children_][term-child].
+
+For the syntax tree defined in the diagram, a breadth-first traversal first
+searches the root of the tree (**A**), then its children (**B** and **F**), then
+their children (**C**, **D**, **E**, and **G**).
+
+###### Depth-first traversal
+
+Alternatively, and more commonly, **depth-first traversal** is used.
+The search is first deepened, by traversing [_children_][term-child], before
+traversing [_siblings_][term-sibling].
+
+For the syntax tree defined in the diagram, a depth-first traversal first
+searches the root of the tree (**A**), then one of its children (**B** or
+**F**), then their children (**C**, **D**, and **E**, or **G**).
+
+For a given node _N_ with [_children_][term-child], a **depth-first traversal**
+performs three steps, simplified to only binary trees (every node has
+[_head_][term-head] and [_tail_][term-tail], but no other children):
+
+-   **N**: visit _N_ itself
+-   **L**: traverse [_head_][term-head]
+-   **R**: traverse [_tail_][term-tail]
+
+These steps can be done in any order, but for non-binary trees, **L** and **R**
+occur together.
+If **L** is done before **R**, the traversal is called _left-to-right_
+traversal, otherwise it is called _right-to-left_ traversal.
+In the case of non-binary trees, the other children between _head_ and _tail_
+are processed in that order as well, so for _left-to-right_ traversal, first
+_head_ is traversed (**L**), then its _next sibling_ is traversed, etcetera,
+until finally _tail_ (**R**) is traversed.
+
+Because **L** and **R** occur together for non-binary trees, we can produce four
+types of orders: NLR, NRL, LRN, RLN.
+
+NLR and LRN (the two _left-to-right_ traversal options) are most commonly used
+and respectively named [_preorder_][term-preorder] and
+[_postorder_][term-postorder].
+
+For the syntax tree defined in the diagram, _preorder_ and _postorder_ traversal
+thus first search the root of the tree (**A**), then its head (**B**), then its
+children from left-to-right (**C**, **D**, and then **E**).
+After all [_descendants_][term-descendant] of **B** are traversed, its next
+sibling (**F**) is traversed and then finally its only child (**G**).
+
 ## unist
 
 unist is a specification for syntax trees which ensures that libraries that work with unified are as interoperable as possible. **All ASTs in unified conform to this spec**. It's the bread and butter of the ecosystem.
@@ -245,6 +358,42 @@ unist is a specification for syntax trees which ensures that libraries that work
 ### Motivation
 
 A standard AST allows developers to use the same visitor function on all formats, whether it's markdown, HTML, natural language, or MDX. Using the same library ensures that the core functionality is as solid as possible while cutting down on cognitive overhead when trying to perform common tasks.
+
+### unist-util-visit
+
+unist-util-visit is a library that improves the DX of tree traversal
+for unist trees. It's a function that takes a tree, a node type, and
+a callback which it invokes with any matching nodes that are found.
+
+```js
+visit(tree, 'image', node => {
+  console.log(node)
+})
+```
+
+### unist-util-remove
+
+### Advanced operations
+
+Once you're familiar with some of the primary unist utilities, you can
+combine them together to address more complex needs.
+
+#### Removing nodes based on parent context
+
+In some cases you might want to remove nodes based on their parent context. Consider
+a scenario where you want to remove all images contained within a heading.
+
+You can achieve this by combining unist-util-visit with unist-util-remove. The idea
+is that you first visit the parent, which would be heading nodes, and then remove
+images from the subtree.
+
+```js
+visit(tree, 'heading', headingNode => {
+  remove(headingNode, 'image')
+})
+```
+
+[Watch this lesson on egghead →](https://egghead.io/lessons/javascript-remove-markdown-nodes-from-a-document-with-unist-util-remove)
 
 ### unist resources
 
@@ -424,6 +573,133 @@ unified was originally created by [Titus Wormer][wooorm]. It's now governed by a
 The collective and its governance won't be addressed in this handbook. If you're interested, you can [read more about the collective](https://github.com/unifiedjs/collective)
 on GitHub.
 
+## Glossary
+
+###### Tree
+
+A **tree** is a node and all of its [_descendants_][term-descendant] (if any).
+
+###### Child
+
+Node X is **child** of node Y, if Y’s `children` include X.
+
+###### Parent
+
+Node X is **parent** of node Y, if Y is a [_child_][term-child] of X.
+
+###### Index
+
+The **index** of a [_child_][term-child] is its number of preceding
+[_siblings_][term-sibling], or `0` if it has none.
+
+###### Sibling
+
+Node X is a **sibling** of node Y, if X and Y have the same
+[_parent_][term-parent] (if any).
+
+The **previous sibling** of a [_child_][term-child] is its **sibling** at its
+[_index_][term-index] minus 1.
+
+The **next sibling** of a [_child_][term-child] is its **sibling** at its
+[_index_][term-index] plus 1.
+
+###### Root
+
+The **root** of a node is itself, if without [_parent_][term-parent], or the
+**root** of its [_parent_][term-parent].
+
+The **root** of a [_tree_][term-tree] is any node in that [_tree_][term-tree]
+without [_parent_][term-parent].
+
+###### Descendant
+
+Node X is **descendant** of node Y, if X is a [_child_][term-child] of Y, or if
+X is a [_child_][term-child] of node Z that is a **descendant** of Y.
+
+An **inclusive descendant** is a node or one of its **descendants**.
+
+###### Ancestor
+
+Node X is an **ancestor** of node Y, if Y is a [_descendant_][term-descendant]
+of X.
+
+An **inclusive ancestor** is a node or one of its **ancestors**.
+
+###### Head
+
+The **head** of a node is its first [_child_][term-child] (if any).
+
+###### Tail
+
+The **tail** of a node is its last [_child_][term-child] (if any).
+
+###### Leaf
+
+A **leaf** is a node with no [_children_][term-child].
+
+###### Branch
+
+A **branch** is a node with one or more [_children_][term-child].
+
+###### Generated
+
+A node is **generated** if it does not have [_positional
+information_][term-positional-info].
+
+###### Type
+
+The **type** of a node is the value of its `type` field.
+
+###### Positional information
+
+The **positional information** of a node is the value of its `position` field.
+
+###### File
+
+A **file** is a source document that represents the original file that was
+parsed to produce the syntax tree.
+[_Positional information_][term-positional-info] represents the place of a node
+in this file.
+Files are provided by the host environment and not defined by unist.
+
+For example, see projects such as [**vfile**][vfile].
+
+###### Preorder
+
+In **preorder** (**NLR**) is [depth-first][traversal-depth] [tree
+traversal][traversal] that performs the following steps for each node _N_:
+
+1.  **N**: visit _N_ itself
+2.  **L**: traverse [_head_][term-head] (then its _next sibling_, recursively
+    moving forward until reaching _tail_)
+3.  **R**: traverse [_tail_][term-tail]
+
+###### Postorder
+
+In **postorder** (**LRN**) is [depth-first][traversal-depth] [tree
+traversal][traversal] that performs the following steps for each node _N_:
+
+1.  **L**: traverse [_head_][term-head] (then its _next sibling_, recursively
+    moving forward until reaching _tail_)
+2.  **R**: traverse [_tail_][term-tail]
+3.  **N**: visit _N_ itself
+
+###### Enter
+
+**Enter** is a step right before other steps performed on a given node _N_ when
+[**traversing**][traversal] a tree.
+
+For example, when performing _preorder_ traversal, **enter** is the first step
+taken, right before visiting _N_ itself.
+
+###### Exit
+
+**Exit** is a step right after other steps performed on a given node _N_ when
+[**traversing**][traversal] a tree.
+
+For example, when performing _preorder_ traversal, **exit** is the last step
+taken, right after traversing the [_tail_][term-tail] of _N_.
+
 ## Authors
 
 -   [John Otander][johno]
@@ -488,6 +764,36 @@ This handbook is inspired by the [babel-handbook][] written by
 
 [retextjs]: https://github.com/retextjs
 
+[term-tree]: #tree
+
+[term-preorder]: #preorder
+
+[term-postorder]: #postorder
+
+[term-child]: #child
+
+[term-parent]: #parent-1
+
+[term-index]: #index
+
+[term-sibling]: #sibling
+
+[term-descendant]: #descendant
+
+[term-head]: #head
+
+[term-tail]: #tail
+
+[term-generated]: #generated
+
+[term-type]: #type
+
+[term-positional-info]: #positional-information
+
+[term-file]: #file
+
 [unist]: https://github.com/syntax-tree/unist
+
+[vfile]: https://github.com/vfile/vfile
 
 [wooorm]: https://github.com/wooorm

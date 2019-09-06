@@ -85,7 +85,11 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 -   [Authors](#authors)
 
+-   [Additional resources](#additional-resources)
+
 -   [Acknowledgements](#acknowledgements)
+
+-   [License](#license)
 
 ## Introduction
 
@@ -705,10 +709,19 @@ taken, right after traversing the [_tail_][term-tail] of _N_.
 -   [John Otander][johno]
 -   [Titus Wormer][wooorm]
 
+## Additional resources
+
+-   [AST Explorer](https://astexplorer.net)
+-   [MDX Playground](https://mdxjs.com/playground)
+
 ## Acknowledgements
 
 This handbook is inspired by the [babel-handbook][] written by
 [James Kyle][jamiebuilds].
+
+## License
+
+[MIT](https://github.com/unifiedjs/handbook/license)
 
 [Adobe]: https://www.adobe.com
 

@@ -152,6 +152,50 @@ module.exports = options => tree => {
 }
 ```
 
+It accepts the AST as an argument, and then returns it. You can make it do
+something slightly more interesting by counting the heading nodes.
+
+```js
+const visit = require('unist-util-visit')
+
+module.exports = options => tree => {
+  let headingsCount = 0
+
+  visit(tree, 'heading', node => {
+    headingsCount++
+  })
+}
+```
+
+Or, turn all `h1`s in a document into `h2`s:
+
+```js
+const visit = require('unist-util-visit')
+
+module.exports = options => tree => {
+  visit(tree, 'heading', node => {
+    if (node.depth === 1) {
+      node.depth = 2
+    }
+  })
+}
+```
+
+If you ran the plugin above with `# Hello, world!` and compiled it
+back to markdown, the output would be `## Hello, world!`.
+
+unified uses ASTs because plugins are much easier to write when operating
+on objects rather than the strings themselves. You could achieve the same
+result with a string replacement:
+
+```js
+markdown.replace(/^#\s+/g, '## ')
+```
+
+But this would be brittle and doesn't handle the thousands of edgecases
+with complex grammars which make up the syntax of markdown, HTML, and
+MDX.
+
 ### Constructing an AST
 
 In order to form an AST, unified takes an input string and passes that

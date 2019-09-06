@@ -1,8 +1,13 @@
 # unified handbook
 
-**This is a work in progress**
+**:warning: This is a work in progress**
 
-This handbook describes the unified ecosystem. It goes in depth about the numerous syntaxes it supports, usage, and practical guides on writing plugins.
+The compiler for your content.
+
+This handbook describes the unified ecosystem. It goes in depth about the numerous
+syntaxes it supports, usage, and practical guides on writing plugins. Additionally,
+it will attempt to define murky, computer science-y concepts that unified attempts
+to abstract away.
 
 ## Table of contents
 
@@ -93,17 +98,26 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 ## Introduction
 
-**unified** enables new exciting projects like [Gatsby][] to pull in Markdown, [MDX][] to embed [JSX][], and [Prettier][] to format it. It’s used in about 300k projects on GitHub and has about 10m downloads each month on npm: you’re probably using it.
+**unified** enables new exciting projects like [Gatsby][] to pull in Markdown,
+[MDX][] to embed [JSX][], and [Prettier][] to format it. It’s used in about 300k
+projects on GitHub and has about 10m downloads each month on npm: you’re probably
+using it.
 
-It powers [remarkjs][], [rehypejs][], [mdx-js][], [retextjs][], and [redotjs][]. It's used to build other projects like [prettier][], [gatsbyjs][], and more.
+It powers [remarkjs][], [rehypejs][], [mdx-js][], [retextjs][], and [redotjs][]. It's
+used to build other projects like [prettier][], [gatsbyjs][], and more.
 
-Some notable users are [Node.js][], [ZEIT][],  [Netlify][], [GitHub][], [Mozilla][], [WordPress][], [Adobe][], [Facebook][], [Google][].
+Some notable users are [Node.js][], [ZEIT][],  [Netlify][], [GitHub][], [Mozilla][],
+[WordPress][], [Adobe][], [Facebook][], [Google][].
 
 ## How does it work?
 
-unified uses [abstract syntax trees][asts], or ASTs, that plugins can operate on. It can even process between different formats. This means you can parse a markdown document, transform it to HTML, and then transpile back to markdown.
+unified uses [abstract syntax trees][asts], or ASTs, that plugins can operate on. It
+can even process between different formats. This means you can parse a markdown document,
+transform it to HTML, and then transpile back to markdown.
 
-unified leverages a syntax tree specification (called [unist][] or UST) so that utilities can be shared amongst different formats. In practice, you can use `unist-util-visit` to visit nodes **using the same library with the same API** on any supported AST.
+unified leverages a syntax tree specification (called [unist][] or UST) so that utilities
+can be shared amongst different formats. In practice, you can use `unist-util-visit` to visit
+nodes **using the same library with the same API** on any supported AST.
 
 ```js
 visit(markdownAST, 'images', transformImages)
@@ -112,7 +126,8 @@ visit(htmlAST, 'img', transformImgs)
 
 ## Supported syntaxes
 
-unified supports a few different syntaxes. Each have their own formal specification and are compatible with all `unist` utility libraries.
+unified supports a few different syntaxes. Each have their own formal specification and are
+compatible with all `unist` utility libraries.
 
 -   **[mdast][]**/**[remarkjs][]**: Markdown
 -   **[hast][]**/**[rehypejs][]**: HTML
@@ -123,9 +138,11 @@ Each syntax has its own GitHub organization and subset of plugins and libraries.
 
 ## Abstract syntax trees
 
-An abstract syntax tree, or AST, is a representation of input. It's an abstraction that enables developers to analyze, transform and generate code.
+An abstract syntax tree, or AST, is a representation of input. It's an abstraction that
+enables developers to analyze, transform and generate code.
 
-They're the integral data structure in the unified ecosystem. Most plugins operate solely on the AST, receiving it as an argument and then returning a new AST afterwards.
+They're the integral data structure in the unified ecosystem. Most plugins operate solely
+on the AST, receiving it as an argument and then returning a new AST afterwards.
 
 Your most basic plugin looks like the following (where the tree is an AST):
 
@@ -357,11 +374,16 @@ sibling (**F**) is traversed and then finally its only child (**G**).
 
 ## unist
 
-unist is a specification for syntax trees which ensures that libraries that work with unified are as interoperable as possible. **All ASTs in unified conform to this spec**. It's the bread and butter of the ecosystem.
+unist is a specification for syntax trees which ensures that libraries that work with
+unified are as interoperable as possible. **All ASTs in unified conform to this spec**.
+It's the bread and butter of the ecosystem.
 
 ### Motivation
 
-A standard AST allows developers to use the same visitor function on all formats, whether it's markdown, HTML, natural language, or MDX. Using the same library ensures that the core functionality is as solid as possible while cutting down on cognitive overhead when trying to perform common tasks.
+A standard AST allows developers to use the same visitor function on all formats, whether
+it's markdown, HTML, natural language, or MDX. Using the same library ensures that the core
+functionality is as solid as possible while cutting down on cognitive overhead when trying
+to perform common tasks.
 
 ### unist-util-visit
 
@@ -406,25 +428,33 @@ visit(tree, 'heading', headingNode => {
 
 ## unified
 
-unified is the interface for working with syntax trees and can be used in the same way for any of the supported syntaxes.
+unified is the interface for working with syntax trees and can be used in the same way
+for any of the supported syntaxes.
 
 For unified to work it requires two key pieces: a parser and a compiler.
 
 ### Parser
 
-A parser takes a string and tokenizes it based on syntax. A markdown parser would turn `# Hello, world!` into a `heading` node.
+A parser takes a string and tokenizes it based on syntax. A markdown parser would
+turn `# Hello, world!` into a `heading` node.
 
 unified has a parser for each of its supported syntax trees.
 
 ### Compiler
 
-A compiler turns an AST into its "output". This is typically a string. In some cases folks want to parse a markdown document, transform it, and then write back out markdown (like Prettier). In other cases folks might want to turn markdown into HTML.
+A compiler turns an AST into its "output". This is typically a string. In some cases
+folks want to parse a markdown document, transform it, and then write back out markdown
+(like Prettier). In other cases folks might want to turn markdown into HTML.
 
-unified already supports compilers for most common outputs including markdown, HTML, text, and MDX. It even offers compilers for less common use cases including compiling markdown to CLI manual pages.
+unified already supports compilers for most common outputs including markdown, HTML,
+text, and MDX. It even offers compilers for less common use cases including compiling
+markdown to CLI manual pages.
 
 ### Transpiler
 
-unified also offers transpilers. This is how one syntax tree is converted to another format. The most common transpiler is `mdast-util-to-hast` which converts the markdown AST (mdast) to the HTML AST (hast).
+unified also offers transpilers. This is how one syntax tree is converted to another format.
+The most common transpiler is `mdast-util-to-hast` which converts the markdown AST (mdast)
+to the HTML AST (hast).
 
 ### Usage
 
@@ -448,7 +478,8 @@ And then given a string to operate on:
 })
 ```
 
-A more real-world example might want to turn a markdown document into an HTML string which would look something like:
+A more real-world example might want to turn a markdown document into an HTML string which
+would look something like:
 
 ```js
 var unified = require('unified')
@@ -572,9 +603,12 @@ module.exports = () => tree => {
 
 ## Collective
 
-unified was originally created by [Titus Wormer][wooorm]. It's now governed by a collective which handles the many GitHub organizations, repositories, and packages that are part of the greater unified ecosystem.
+unified was originally created by [Titus Wormer][wooorm]. It's now governed by a collective
+which handles the many GitHub organizations, repositories, and packages that are part of the
+greater unified ecosystem.
 
-The collective and its governance won't be addressed in this handbook. If you're interested, you can [read more about the collective](https://github.com/unifiedjs/collective)
+The collective and its governance won't be addressed in this handbook. If you're interested,
+you can [read more about the collective](https://github.com/unifiedjs/collective)
 on GitHub.
 
 ## Glossary

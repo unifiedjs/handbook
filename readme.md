@@ -20,16 +20,16 @@ This handbook describes the unified ecosystem. It goes in depth about the numero
 
 -   [Tree traversal](#tree-traversal)
 
-    -   -   -   -   [Breadth-first traversal](#breadth-first-traversal)
-                -   [Depth-first traversal](#depth-first-traversal)
+    -   [Breadth-first traversal](#breadth-first-traversal)
+    -   [Depth-first traversal](#depth-first-traversal)
 
 -   [unist](#unist)
 
     -   [Motivation](#motivation)
 
-    -   [`unist-util-visit`](#unist-util-visit)
+    -   [unist-util-visit](#unist-util-visit)
 
-    -   [`unist-util-remove`](#unist-util-remove)
+    -   [unist-util-remove](#unist-util-remove)
 
     -   [Advanced operations](#advanced-operations)
 
@@ -301,7 +301,7 @@ In the following examples, we’ll work with this tree:
   +---+ +---+ +---+    +---+
 ```
 
-###### Breadth-first traversal
+### Breadth-first traversal
 
 **Breadth-first traversal** is visiting a node and all its
 [_siblings_][term-sibling] to broaden the search at that level, before
@@ -311,7 +311,7 @@ For the syntax tree defined in the diagram, a breadth-first traversal first
 searches the root of the tree (**A**), then its children (**B** and **F**), then
 their children (**C**, **D**, **E**, and **G**).
 
-###### Depth-first traversal
+### Depth-first traversal
 
 Alternatively, and more commonly, **depth-first traversal** is used.
 The search is first deepened, by traversing [_children_][term-child], before

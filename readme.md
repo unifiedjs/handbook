@@ -48,6 +48,10 @@ to abstract away.
 
     -   [remark CLI](#remark-cli)
 
+        -   [Inspect](#inspect)
+        -   [Use a plugin](#use-a-plugin)
+        -   [Lint](#lint)
+
     -   [remark guides](#remark-guides)
 
         -   [Writing a plugin to modify headings](#writing-a-plugin-to-modify-headings)
@@ -522,7 +526,83 @@ unified()
 
 ### remark CLI
 
-remark offers a CLI that can be used as well.
+remark offers a CLI that which can be used to automate tasks.
+
+#### Inspect
+
+A useful option with the remark CLI is inspecting the AST of a
+document. This can be useful when you're trying to remember the
+name of a node type or you want an overview of the overall
+structure.
+
+```sh
+❯ remark doc.md --inspect
+root[13] (1:1-67:1, 0-2740)
+├─ paragraph[1] (1:1-1:64, 0-63)
+│  └─ text: "import TableOfContents from '../src/components/TableOfContents'" (1:1-1:64, 0-63)
+├─ heading[1] (3:1-3:15, 65-79) [depth=1]
+│  └─ text: "Fecunda illa" (3:3-3:15, 67-79)
+├─ html: "<TableOfContents headings={props.headings} />" (5:1-5:46, 81-126)
+├─ heading[1] (7:1-7:18, 128-145) [depth=2]
+│  └─ text: "Sorore extulit" (7:4-7:18, 131-145)
+├─ paragraph[1] (9:1-12:75, 147-454)
+│  └─ text: "Lorem markdownum sorore extulit, non suo putant tritumque amplexa silvis: in,\nlascivaque femineam ara etiam! Oppida clipeus formidine, germanae in filia\netiamnunc demisso visa misce, praedaeque protinus communis paverunt dedit, suo.\nSertaque Hyperborea eatque, sed valles novercam tellure exhortantur coegi." (9:1-12:75, 147-454)
+├─ list[3] (14:1-16:58, 456-573) [ordered=true][start=1][spread=false]
+│  ├─ listItem[1] (14:1-14:22, 456-477) [spread=false]
+│  │  └─ paragraph[1] (14:4-14:22, 459-477)
+│  │     └─ text: "Cunctosque plusque" (14:4-14:22, 459-477)
+│  ├─ listItem[1] (15:1-15:38, 478-515) [spread=false]
+│  │  └─ paragraph[1] (15:4-15:38, 481-515)
+│  │     └─ text: "Cum ego vacuas fata nolet At dedit" (15:4-15:38, 481-515)
+│  └─ listItem[1] (16:1-16:58, 516-573) [spread=false]
+│     └─ paragraph[1] (16:4-16:58, 519-573)
+│        └─ text: "Nec legerat ostendisse ponat sulcis vincirem cinctaque" (16:4-16:58, 519-573)
+```
+
+#### Use a plugin
+
+You can use plugins with the CLI:
+
+```sh
+remark doc.md --use toc
+```
+
+This will output a markdown string with a table of contents added.
+If you'd like, you can overwrite the document with the generated table
+of contents:
+
+```sh
+remark doc.md -o --use toc
+```
+
+#### Lint
+
+You can use a lint preset to ensure your markdown style guide is adhered
+to:
+
+```sh
+❯ remark doc.md --use preset-lint-markdown-style-guide
+
+  15:1-15:38  warning  Marker should be `1`, was `2`  ordered-list-marker-value  remark-lint
+  16:1-16:58  warning  Marker should be `1`, was `3`  ordered-list-marker-value  remark-lint
+   34:1-60:6  warning  Code blocks should be fenced   code-block-style           remark-lint
+
+⚠ 4 warnings
+```
+
+If you want to exit with a failure code (`1`) when the lint doesn't pass you can use the `--frail` option:
+
+```sh
+❯ remark doc.md --frail --use preset-lint-markdown-style-guide || echo '!!!failed'
+
+
+  15:1-15:38  warning  Marker should be `1`, was `2`  ordered-list-marker-value  remark-lint
+  16:1-16:58  warning  Marker should be `1`, was `3`  ordered-list-marker-value  remark-lint
+   34:1-60:6  warning  Code blocks should be fenced   code-block-style           remark-lint
+
+⚠ 4 warnings
+!!!failed
+```
 
 ### remark guides
 

@@ -791,6 +791,8 @@ taken, right after traversing the [_tail_][term-tail] of _N_.
 
 -   [AST Explorer](https://astexplorer.net)
 -   [MDX Playground](https://mdxjs.com/playground)
+-   [Gatsby remark plugin tutorial](https://www.gatsbyjs.org/docs/remark-plugin-tutorial/)
+-   [How to build a compiler](https://www.youtube.com/watch?v=ZYFOWesCm_0)
 
 ## Acknowledgements
 

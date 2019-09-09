@@ -27,12 +27,17 @@ to abstract away.
 
     -   [Motivation](#motivation)
 
-    -   [unist-util-visit](#unist-util-visit)
+    -   [Visitors](#visitors)
+
+        -   [unist-util-visit](#unist-util-visit)
+
+            -   [Visit nodes based on context](#visit-nodes-based-on-context)
 
     -   [unist-util-remove](#unist-util-remove)
 
     -   [Advanced operations](#advanced-operations)
 
+        -   [Optimizing traversal](#optimizing-traversal)
         -   [Removing nodes based on parent context](#removing-nodes-based-on-parent-context)
 
     -   [unist resources](#unist-resources)
@@ -62,12 +67,12 @@ to abstract away.
 
 -   [MDX](#mdx)
 
+    -   [MDX transpilation pipeline](#mdx-transpilation-pipeline)
+
 -   [Tree traversal](#tree-traversal)
 
     -   [Breadth-first traversal](#breadth-first-traversal)
     -   [Depth-first traversal](#depth-first-traversal)
-
--   [Collective](#collective)
 
 -   [Glossary](#glossary)
 
@@ -92,6 +97,8 @@ to abstract away.
     -   [Enter](#enter)
     -   [Exit](#exit)
 
+-   [Collective](#collective)
+
 -   [Authors](#authors)
 
 -   [Additional resources](#additional-resources)
@@ -99,6 +106,8 @@ to abstract away.
 -   [Acknowledgements](#acknowledgements)
 
 -   [License](#license)
+
+-   [Notes](#notes)
 
 ## Introduction
 
@@ -196,7 +205,7 @@ result with a string replacement:
 markdown.replace(/^#\s+/g, '## ')
 ```
 
-But this would be brittle and doesn't handle the thousands of edgecases
+But this would be brittle and doesn't handle the thousands of edge cases
 with complex grammars which make up the syntax of markdown, HTML, and
 MDX.
 
@@ -242,19 +251,7 @@ The markdown will result in the following AST:
     {
       "type": "text",
       "value": "Hello, ",
-      "position": {
-        "start": {
-          "line": 1,
-          "column": 3,
-          "offset": 2
-        },
-        "end": {
-          "line": 1,
-          "column": 10,
-          "offset": 9
-        },
-        "indent": []
-      }
+      "position": {}
     },
     {
       "type": "strong",
@@ -262,66 +259,18 @@ The markdown will result in the following AST:
         {
           "type": "text",
           "value": "world",
-          "position": {
-            "start": {
-              "line": 1,
-              "column": 12,
-              "offset": 11
-            },
-            "end": {
-              "line": 1,
-              "column": 17,
-              "offset": 16
-            },
-            "indent": []
-          }
+          "position": {}
         }
       ],
-      "position": {
-        "start": {
-          "line": 1,
-          "column": 10,
-          "offset": 9
-        },
-        "end": {
-          "line": 1,
-          "column": 19,
-          "offset": 18
-        },
-        "indent": []
-      }
+      "position": {}
     },
     {
       "type": "text",
       "value": "!",
-      "position": {
-        "start": {
-          "line": 1,
-          "column": 19,
-          "offset": 18
-        },
-        "end": {
-          "line": 1,
-          "column": 20,
-          "offset": 19
-        },
-        "indent": []
-      }
+      "position": {}
     }
   ],
-  "position": {
-    "start": {
-      "line": 1,
-      "column": 1,
-      "offset": 0
-    },
-    "end": {
-      "line": 1,
-      "column": 20,
-      "offset": 19
-    },
-    "indent": []
-  }
+  "position": {}
 }
 ```
 
@@ -357,7 +306,16 @@ it's markdown, HTML, natural language, or MDX. Using the same library ensures th
 functionality is as solid as possible while cutting down on cognitive overhead when trying
 to perform common tasks.
 
-### unist-util-visit
+### Visitors
+
+When working with ASTs it's common to need to [traverse the tree]((#tree-traversal)).
+This is typically referred to as "visiting". A handler for a particular type of node
+is called a "visitor".
+
+unified comes with visitor utilities so you don't have to reinvent the wheel every
+time you want to operate on particular nodes.
+
+#### unist-util-visit
 
 unist-util-visit is a library that improves the DX of tree traversal
 for unist trees. It's a function that takes a tree, a node type, and
@@ -369,12 +327,38 @@ visit(tree, 'image', node => {
 })
 ```
 
+**Note**: This performs a depth-first tree traversal in preorder (NLR).
+
+##### Visit nodes based on context
+
+Something that's useful with unist utilities is that they can be used
+on subtrees. A subtree would be any node in the tree that may or may
+not have children.
+
+For example if you only wanted to visit images within heading nodes
+you could first visit headings, and then visit images contained within
+each heading node you encounter.
+
+```js
+visit(tree, 'heading', headingNode => {
+  visit(headingNode, 'image', node => {
+    console.log(node)
+  })
+})
+```
+
 ### unist-util-remove
 
 ### Advanced operations
 
 Once you're familiar with some of the primary unist utilities, you can
 combine them together to address more complex needs.
+
+#### Optimizing traversal
+
+When you care about multiple node types and are operating on large documents
+it might be preferable to walk all nodes and add a check for each node type
+with unist-util-is.
 
 #### Removing nodes based on parent context
 
@@ -645,9 +629,54 @@ module.exports = () => tree => {
 
 ## rehype
 
+rehype is an HTML processor in the same way that remark is for
+markdown.
+
+```js
+rehype()
+  .processSync('<title>Hi</title><h2>Hello world!')
+```
+
 ## retext
 
 ## MDX
+
+MDX is a syntax and language for embedding JSX in markdown. It allows you
+to embed components in your documents for writing immersive and interactive
+content.
+
+An example MDX document looks like:
+
+```md
+import Chart from '../components/snowfall-chart'
+
+# Last year's snowfall
+
+In the winter of2018, the snowfall was above average. It was followed by
+a warm spring which caused flood conditions in many of the nearby rivers.
+
+<SnowfallChart year="2018" />
+```
+
+The MDX core library extends the remark parser with the [remark-mdx][]
+plugin in order to define its own JSX-enabled syntax.
+
+### MDX transpilation pipeline
+
+MDX uses [remark][remarkjs] and [rehype][rehypejs] internally.
+The flow of MDX consists of the following six steps:
+
+1.  **Parse**: MDX text => MDAST
+2.  **Transpile**: MDAST => MDXAST (remark-mdx)
+3.  **Transform**: remark plugins applied to AST
+4.  **Transpile**: MDXAST => MDXHAST
+5.  **Transform**: rehype plugins applied to AST
+6.  **Generate**: MDXHAST => JSX text
+
+The final result is JSX that can be used in React/Preact/Vue/etc.
+
+MDX allows you to hook into this flow at step 3 and 5, where you can use remark
+and rehype plugins (respectively) to benefit from their ecosystems.
 
 ## Tree traversal
 
@@ -724,16 +753,6 @@ thus first search the root of the tree (**A**), then its head (**B**), then its
 children from left-to-right (**C**, **D**, and then **E**).
 After all [_descendants_][term-descendant] of **B** are traversed, its next
 sibling (**F**) is traversed and then finally its only child (**G**).
-
-## Collective
-
-unified was originally created by [Titus Wormer][wooorm]. It's now governed by a collective
-which handles the many GitHub organizations, repositories, and packages that are part of the
-greater unified ecosystem.
-
-The collective and its governance won't be addressed in this handbook. If you're interested,
-you can [read more about the collective](https://github.com/unifiedjs/collective)
-on GitHub.
 
 ## Glossary
 
@@ -862,6 +881,16 @@ taken, right before visiting _N_ itself.
 For example, when performing _preorder_ traversal, **exit** is the last step
 taken, right after traversing the [_tail_][term-tail] of _N_.
 
+## Collective
+
+unified was originally created by [Titus Wormer][wooorm]. It's now governed by a collective
+which handles the many GitHub organizations, repositories, and packages that are part of the
+greater unified ecosystem.
+
+The collective and its governance won't be addressed in this handbook. If you're interested,
+you can [read more about the collective](https://github.com/unifiedjs/collective)
+on GitHub.
+
 ## Authors
 
 -   [John Otander][johno]
@@ -882,6 +911,12 @@ This handbook is inspired by the [babel-handbook][] written by
 ## License
 
 [MIT](https://github.com/unifiedjs/handbook/license)
+
+## Notes
+
+-   unist nodes are accompanied by positional information. To keep AST printouts as
+    simple as possible, it will be an empty object (`"position": {}`) when it isn't
+    relevant for the example.
 
 [Adobe]: https://www.adobe.com
 
@@ -932,6 +967,8 @@ This handbook is inspired by the [babel-handbook][] written by
 [redotjs]: https://github.com/redotjs
 
 [rehypejs]: https://github.com/rehypejs
+
+[remark-mdx]: https://github.com/mdx-js/mdx/tree/master/packages/remark-mdx
 
 [remarkjs]: https://github.com/remarkjs
 

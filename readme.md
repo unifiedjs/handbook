@@ -553,6 +553,8 @@ If you want to exit with a failure code (`1`) when the lint doesn't pass you can
 !!!failed
 ```
 
+[Watch a video introduction to the CLI →](https://egghead.io/lessons/javascript-introduction-to-the-remark-cli)
+
 ### remark guides
 
 #### Writing a plugin to modify headings
